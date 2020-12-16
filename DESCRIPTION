@@ -1,0 +1,39 @@
+Package: marmalaid
+Type: Package
+Title: MARine MAchine Learning AID - a collection of functions for utilising machine learning in marine biological science
+Version: 0.1
+Date: 2020-11-19
+Authors@R: 
+    person(given = "Bernhard",
+           family = "Kuehn",
+           role = c("aut", "cre"),
+           email = "bernhard.kuehn@thuenen.de",
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: This package is a collection of tools to derive features from gridded spatio-temporal data (EOF & SOM analysis) for use in a machine learning framework including feature selection via NSGA-II.   
+License: GPL-3
+Encoding: UTF-8
+LazyData: false
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Depends: R (>= 3.6.0),
+Imports: caret,
+	 data.table,
+	 doParallel,
+	 dplyr,
+ 	 ecr (>= 2.0.0),
+	 foreach,
+	 grDevices,
+	 kohonen (>= 3.0.0),
+	 maps,
+	 parallel, 
+	 parallelMap (>= 1.5.0),
+	 pracma,
+	 ranger,
+ 	 raster,
+	 R.cache (>= 0.14.0),
+	 RColorBrewer,
+	 scales,
+	 sp
+	 
+	 
+
