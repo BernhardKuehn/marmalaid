@@ -40,7 +40,100 @@
 #' }
 #' @details This function implements the non-dominated sorting genetic algorithm (NSGA-II) feature selection for the bi-objective case. It simultanously minimizes the Nr. of features and
 #'          a measure of performance (e.g. RMSE) for a machine learning model (e.g. Random Forest).
-#' @importFrom ecr evaluateFitness
+#' @examples
+#' \dontrun{
+#'  # This short example takes some time (~ 10min on 10 cores of AMD Ryzen 3700X).
+#'  # To make sure the algorithm converged, increase 'max.iter' and 'stop.criterion'
+#'  # as well increase 'reps' in the fitness function for robustness.
+#' set.seed(12345)
+#' N = 100
+#'
+#' # create 4 predictors
+#' AR1  = arima.sim(model = list(order = c(1,0,0),ar = 0.3),n = N)
+#' ARMA1.1 = arima.sim(model = list(order = c(1,0,1),ar = 0.3,ma  = -0.5),n = N)
+#' sine = sin(2*pi/(365)*1:N)
+#' cosine = 0.5*cos(2*pi/(0.2*365)*1:N)
+#'
+#' # combine to form the response
+#' y = (1/(1+exp(-0.2*((1:N)-N/2)))-0.5) *0.6*AR1 +
+#'   +c((1:N-N/3)^2)/max(c((1:N-N/3)^2)) * 1*ARMA1.1 +
+#'   1:N/max(1:N) * 2*0.3 * sine * cosine +
+#'   rnorm(n = 100,mean = 0,sd = 0.4*min(sd(sine),sd(cosine)))
+#'
+#' # plot
+#' layout(mat = matrix(c(rep(1,8),2,2,3,3,4,4,5,5),ncol = 4,nrow = 4,byrow = TRUE),
+#'        height = c(0.2,rep(0.3,4)))
+#' par(mar = c(4,4,3,3))
+#' plot(y,type = "l",main = "Response")
+#' plot(AR1,type = "l",main = "AR1",xlab = "")
+#' plot(ARMA1.1, type = "l",main = "ARMA1.1",xlab = "")
+#' plot(sine,type = "l",main = "Sine",xlab = "")
+#' plot(cosine,type = "l",main = "Cosine",xlab = "")
+#'
+#' predictors = cbind(AR1,ARMA1.1,sine,cosine)
+#'
+#' # create several correlated nonsense features with correlations ranging between 0.5 - 0.7
+#' # taken from "https://stats.stackexchange.com/questions/15011/
+#' # generate-a-random-variable-with-a-defined-correlation-to-an-existing-variables"
+#' cors = runif(n = 100,min = 0.5,max = 0.7)*sample(c(1,-1),size = 100,replace = TRUE)
+#' nonsenseVars = matrix(NA,ncol = 100,nrow = nrow(predictors))
+#' for(i in seq(cors)){
+#'   rho   <- cors[i]               # desired correlation = cos(angle)
+#'   theta <- acos(rho)             # corresponding angle
+#'   x1    <- predictors[,sample(1:4,1,TRUE)]        # fixed given data
+#'   x2    <- rnorm(N, 0, sd(x1))      # new random data
+#'   X     <- cbind(x1, x2)         # matrix
+#'   Xctr  <- scale(X, center=TRUE, scale=FALSE)   # centered columns (mean 0)
+#'
+#'   Id   <- diag(N)                               # identity matrix
+#'   Q    <- qr.Q(qr(Xctr[ , 1, drop=FALSE]))      # QR-decomposition, just matrix Q
+#'   P    <- tcrossprod(Q)          # = Q Q'       # projection onto space defined by x1
+#'   x2o  <- (Id-P) %*% Xctr[ , 2]                 # x2ctr made orthogonal to x1ctr
+#'   Xc2  <- cbind(Xctr[ , 1], x2o)                # bind to matrix
+#'   Y    <- Xc2 %*% diag(1/sqrt(colSums(Xc2^2)))  # scale columns to length 1
+#'
+#'   nonsenseVars[,i] = Y[ , 2] + (1 / tan(theta)) * Y[ , 1]     # final new vector
+#'
+#' }
+#'
+#' # input data
+#' x = data.frame(predictors,nonsenseVars)
+#'
+#' fitness.func = MO.fitness.func.extraTrees.ranger
+#' # run with RMSE-metric
+#' metric.func.RMSE = marmalaid::RMSE
+#' # define nr. of folds and permutations
+#' formals(fitness.func)$folds <- 5
+#' formals(fitness.func)$reps <- 10
+#' formals(fitness.func)$return.scaled.metric = TRUE
+#'
+#' ga.input.RMSE = list(fitness.func = fitness.func,
+#'                      metric.func = metric.func.RMSE)
+#'
+#' # run NSGA-II feature selection with extraTrees model
+#' NSGAII.feature.sel = NSGA.II_wrapper(
+#'   x,y,
+#'   seed = 12345,
+#'   ga.input = ga.input.RMSE,
+#'   mutation.rate = 0.1,
+#'   crossover.rate = 0.8,
+#'   remove.overlap = TRUE,
+#'   pop.size = 100,
+#'   offspring.size = 100,
+#'   max.iter = 40,
+#'   initialize.equal = TRUE,
+#'   stop.criterion = 10,
+#'   n.cores = 10,
+#'   ref.point = c(1,1)
+#' )
+#'
+#' # plot evolution
+#' plot_NSGAII(NSGAII.feature.sel)
+#' # chosen variables within pareto front
+#' NSGAII.feature.sel$pareto.varnames
+#' # model performance
+#' Model.metrics.regression_NSGAII(NSGAII.feature.sel,MO.fitness.func.extraTrees.ranger)
+#'}
 
 #' @export
 NSGA.II_wrapper = function(x,y,seed,
