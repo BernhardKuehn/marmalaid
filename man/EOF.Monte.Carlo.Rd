@@ -39,8 +39,9 @@ A \code{list} with the following elements:
 A form of Horns parallel analysis to compare the eigenvalues of a PCA with those of a null-model (randomly permuted colums).
 }
 \details{
-...
+It compares if the 95\% confidence interval of the eigenvalues overlap with the mean for each eigenvalues of a Null model (permuted colums).
+Only Eigenvalues significantly different than those from the NULL model are retained.
 }
 \references{
-...
+Horn JL (1965): "A rationale and test for the number of factors in factor analysis." Psychometrika 30:179–185
 }

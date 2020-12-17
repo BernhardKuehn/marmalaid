@@ -21,8 +21,9 @@
 #'   \item eigen0 - Eigenvalues of the Null-model
 #'   \item Nr.PCs - the number of PCs to retain based on comparing the eigenvalues of the Null-model with the bootstrapped eigenvalues.
 #'   }
-#' @details ...
-#' @references ...
+#' @details It compares if the 95% confidence interval of the eigenvalues overlap with the mean for each eigenvalues of a Null model (permuted colums).
+#'          Only Eigenvalues significantly different than those from the NULL model are retained.
+#' @references Horn JL (1965): "A rationale and test for the number of factors in factor analysis." Psychometrika 30:179–185
 
 #' @export
 EOF.Monte.Carlo = function(raster,center = TRUE,scale = FALSE,size = 100,CI.size = 1000,plot = TRUE){
