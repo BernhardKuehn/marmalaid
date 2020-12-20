@@ -48,7 +48,7 @@ MO.fitness.func.extraTrees.ranger(
 
 \item{only.obs.vs.pred}{A logical value. Setting to return only observations vs. predictions without any metric-function being considered.}
 
-\item{return.scaled.metric}{A logical value. Setting if the metric should be scaled by a naive forecast (mean of the training data).}
+\item{return.scaled.metric}{A logical value. Setting if the metric should be scaled by a naive forecast (mean of all observations).}
 }
 \description{
 Various multi-obj. fitness functions for use with NSGA-II feature selection

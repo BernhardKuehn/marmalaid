@@ -16,15 +16,15 @@
 #' @param folds Number of folds (k) for n-repeated k-fold crossvalidation.
 #' @param reps  Number of repetitions (n) for n-repeated k-fold crossvalidation.
 #' @param only.obs.vs.pred A logical value. Setting to return only observations vs. predictions without any metric-function being considered.
-#' @param return.scaled.metric  A logical value. Setting if the metric should be scaled by a naive forecast (mean of the training data).
+#' @param return.scaled.metric  A logical value. Setting if the metric should be scaled by a naive forecast (mean of all observations).
 #' @details \code{MO.fitness.func.RF.ranger}  - Fitness function for the "randomForest" - algorithm from the \link[ranger]{ranger} package.
 #' \cr \code{MO.fitness.func.extraTrees.ranger}  - Fitness function for the "extraTrees" - algorithm from the \link[ranger]{ranger} package.
-#'
-#' @note \code{fitnessfuns} is a generic name for the functions documented.
 #' @importFrom foreach %do%
+#' @note \code{fitnessfuns} is a generic name for the functions documented.
 #'
-#'
-# for a regression problem using the ranger package
+# # --------------------------------------------------------------- #
+# # Random forest for a regression problem using the ranger package
+# # --------------------------------------------------------------- #
 #' @rdname fitnessfuns
 #' @export
 MO.fitness.func.RF.ranger = function(feat,

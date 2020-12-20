@@ -65,7 +65,9 @@ SOM.quant.error(SST.SOM$SOM.out)
 SOM.topo.error(SST.SOM$SOM.out)
 }
 \references{
-Kiviluoto K (1996) "Topology preservation in self-organizing maps." In: Proceedings of International Conference on Neural Networks (ICNN’96). IEEE, p 294–299 \cr
-Kaski S, Lagus K (1996) "Comparing self-organizing maps." In: von der Malsburg C , von Seelen W , Vorbrüggen JC, Sendhoff B (eds) Artificial Neural Networks — ICANN 96. ICANN 1996. Lecture Notes in Computer Science, vol 1112. Springer, Berlin, Heidelberg.p 809–814 \cr
+Kiviluoto K (1996) "Topology preservation in self-organizing maps." In: Proceedings of International Conference on Neural Networks (ICNN’96). IEEE, p 294–299
+\cr \cr
+Kaski S, Lagus K (1996) "Comparing self-organizing maps." In: von der Malsburg C , von Seelen W , Vorbrüggen JC, Sendhoff B (eds) Artificial Neural Networks — ICANN 96. ICANN 1996. Lecture Notes in Computer Science, vol 1112. Springer, Berlin, Heidelberg.p 809–814
+\cr \cr
 Pötzlbauer G (2004) "Survey and comparison of quality measures for self-organising maps." In: Proc. 5th Workshop on Data Analysis (WDA 2004).p 67–82
 }

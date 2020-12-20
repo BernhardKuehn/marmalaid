@@ -12,10 +12,10 @@
 #' @title Various metric functions for performance evaluation
 #' @description Various metric functions to assess the fit of a statistical model in a regression context.
 #' @param data A \code{dataframe} containing a column with numeric observations (\code{obs}) and the prediction (\code{pred}).
-#' @details {\code{RMSE} calculates the "Root mean squared error".
-#'          \code{MAE} calculates the "Mean absolute error".
-#'          \code{PseudoR2} calculates a "R2"-like metric as cor(obs,pred)^2.
-#'          \code{RMSPE} calculates the "Root mean squared percentage error".
+#' @details {\code{RMSE} calculates the "Root mean squared error". See \href{https://en.wikipedia.org/wiki/Root-mean-square_deviation}{Wikipedia} for details. \cr
+#'          \code{MAE} calculates the "Mean absolute error". See \href{https://en.wikipedia.org/wiki/Mean_absolute_error}{Wikipedia} for details. \cr
+#'          \code{PseudoR2} calculates a "R2"-like metric as cor(obs,pred)^2. \cr
+#'          \code{RMSPE} calculates the "Root mean squared percentage error". See \href{https://stats.stackexchange.com/questions/413249/what-is-the-correct-definition-of-the-root-mean-square-percentage-error-rmspe}{Stackexchange} for details. \cr
 #'          \code{RRSE} calculates the "Root relative squared error", which is the RMSE relative to the RMSE of a naive prediction by using the deviations to the mean.
 #'}
 #' @note \code{metricfuns} is a generic name for the functions documented.

@@ -7,13 +7,15 @@
 
 #' Field anomaly for a spatio-temporal field
 #'
-#' @description Wrapper function for \code{fieldAnomaly(...)} from the package sinkr to calculate the monthly field anomaly for a raster brick.
+#' @description Wrapper function for \code{fieldAnomaly(...)} from the package sinkr to calculate the daily/monthly field anomaly for a raster brick.
 #' @param brick A raster \code{brick} with each layer corresponding to a time step.
 #' @param time A vector of the class "Date", "POSIXct", or "POSIXlt" corresponding to each layer in the raster \code{brick}.
-#' @param level = "month" The temporal resolution over which to calculate the anomalies. See \code{fieldAnomaly} for details.
+#' @param level A character string. The temporal resolution over which to calculate the anomalies. Either \code{julian} / \code{day} for daily or \code{month} for monthly anomalies.
+#'              Will consider "Day of the year" from as.POSIXlt(x)$yday for \code{julian} and  unique format(x,"%m%d") strings for \code{day}.
 #' @return A raster \code{brick} containing the field anomalies.
 #' @references Taylor, M. (2017). sinkr: Collection of functions with emphasis in multivariate data analysis.
 #'             R package version 0.6. \href{https://github.com/marchtaylor/sinkr}{https://github.com/marchtaylor/sinkr}
+#' @details The field anomalies are calculated by subtracting the daily/monthly means from each spatial location of a field.
 #' @examples
 #' # load AHOI SST data
 #' library(raster)
