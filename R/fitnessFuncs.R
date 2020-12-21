@@ -13,6 +13,8 @@
 #' @param y Numeric vector of the response variable.
 #' @param seed The setting for the seed.
 #' @param metric.func Slot for the metric function to be included. The format is metric.func(data) see \link[marmalaid]{metricfuns} for details.
+#' @param mtry Number of variables to possibly split at in each node. Default is the square root of the Number of Variables.
+#' @param nTree Number of Trees to build in Forest for Random Forest/ Extreme Randomized Trees algorithm.
 #' @param folds Number of folds (k) for n-repeated k-fold crossvalidation.
 #' @param reps  Number of repetitions (n) for n-repeated k-fold crossvalidation.
 #' @param only.obs.vs.pred A logical value. Setting to return only observations vs. predictions without any metric-function being considered.
@@ -31,6 +33,8 @@ MO.fitness.func.RF.ranger = function(feat,
                                       x,y,
                                       seed,
                                       metric.func,
+                                      mtry = NULL,
+                                      nTree = 200,
                                       folds = 3,
                                       reps = 20,
                                       only.obs.vs.pred = FALSE,
@@ -57,8 +61,9 @@ MO.fitness.func.RF.ranger = function(feat,
     return(c(metric = Inf,params =  frac.feat))
   }
 
-  # specify the mtry as in the original work of Breiman 2001 (also the same as in randomForest package)
-  mtry= ifelse(!is.null(y) && !is.factor(y), max(floor(sum(feat)/3), 1),floor(sqrt(sum(feat))))
+  if(is.null(mtry)){
+    mtry= floor(sqrt(sum(feat)))
+  }
 
   # perform cv
   i = 1:length(cc.folds)
@@ -75,7 +80,7 @@ MO.fitness.func.RF.ranger = function(feat,
 
     # train classifier (RandomForest)
     set.seed(seed)
-    rf.out = ranger::ranger(y.train~.,data = xy.train,num.trees =  200,probability = FALSE,mtry = mtry)
+    rf.out = ranger::ranger(y.train~.,data = xy.train,num.trees =  nTree,probability = FALSE,mtry = mtry)
     out = data.frame(pred = stats::predict(rf.out,x.test)$predictions,obs = y.test)
   }
 
@@ -112,6 +117,8 @@ MO.fitness.func.RF.ranger = function(feat,
 MO.fitness.func.extraTrees.ranger = function(feat,x,y,
                                              seed,
                                              metric.func,
+                                             mtry = NULL,
+                                             nTree = 200,
                                              folds = 3,
                                              reps = 20,
                                              only.obs.vs.pred = FALSE,
@@ -138,6 +145,10 @@ MO.fitness.func.extraTrees.ranger = function(feat,x,y,
     return(c(metric = Inf,params =  frac.feat))
   }
 
+  if(is.null(mtry)){
+    mtry= floor(sqrt(sum(feat)))
+  }
+
   # perform cv
   i = 1:length(cc.folds)
   out = foreach::foreach(i = i,.packages = c("caret","ranger"),.multicombine = TRUE) %do% {
@@ -152,7 +163,7 @@ MO.fitness.func.extraTrees.ranger = function(feat,x,y,
     xy.test = data.frame(y.test = y.test,x.test)
 
     # extreme randomized Trees regression with ranger
-    extraT.out = ranger::ranger(y.train~.,data = xy.train,num.trees = 200,splitrule = "extratrees",num.random.splits = 1)
+    extraT.out = ranger::ranger(y.train~.,data = xy.train,num.trees = nTree,mtry = mtry,splitrule = "extratrees",num.random.splits = 1)
 
     out = data.frame(pred = stats::predict(extraT.out,x.test)$predictions,obs = y.test)
   }

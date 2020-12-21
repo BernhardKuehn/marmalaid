@@ -13,6 +13,8 @@ MO.fitness.func.RF.ranger(
   y,
   seed,
   metric.func,
+  mtry = NULL,
+  nTree = 200,
   folds = 3,
   reps = 20,
   only.obs.vs.pred = FALSE,
@@ -25,6 +27,8 @@ MO.fitness.func.extraTrees.ranger(
   y,
   seed,
   metric.func,
+  mtry = NULL,
+  nTree = 200,
   folds = 3,
   reps = 20,
   only.obs.vs.pred = FALSE,
@@ -41,6 +45,10 @@ MO.fitness.func.extraTrees.ranger(
 \item{seed}{The setting for the seed.}
 
 \item{metric.func}{Slot for the metric function to be included. The format is metric.func(data) see \link[marmalaid]{metricfuns} for details.}
+
+\item{mtry}{Number of variables to possibly split at in each node. Default is the square root of the Number of Variables.}
+
+\item{nTree}{Number of Trees to build in Forest for Random Forest/ Extreme Randomized Trees algorithm.}
 
 \item{folds}{Number of folds (k) for n-repeated k-fold crossvalidation.}
 
