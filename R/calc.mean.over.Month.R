@@ -9,6 +9,7 @@
 #' @param time A vector of dates corresponding to each layer in the raster \code{brick}.
 #' @param month A vector of numbers between 1 and 12 denoting the month over which to calculate the average (e.g. 3,4,5). Only subsequent month are allowed (e.g \code{c(12,1,2)} works; \code{c(1,3,5)} does not!).
 #' @param shiftYear A logical value. How to handle averages over subsequent month but different years (e.g. Dec.-Jan.-Feb.). If \code{TRUE} the time returned corresponds to the older year (e.g. 1989), otherwise to the younger one (1990).
+#' @param verbose A logical value. Print output to console?
 #' @return A raster \code{brick} containing the avg. spatial fields per specified monthly period per year.
 #' @examples
 #'## For an artificial toy dataset
@@ -28,7 +29,7 @@
 #' plot(SST.winter,1:6)
 #'
 #' @export
-calc.mean.over.Month = function(raster,time,month,shiftYear = TRUE) {
+calc.mean.over.Month = function(raster,time,month,shiftYear = TRUE,verbose = T) {
 
   # check if times and raster are the same size
   if(dim(raster)[3] != length(time)) {
@@ -79,7 +80,9 @@ calc.mean.over.Month = function(raster,time,month,shiftYear = TRUE) {
     }
   }
   month = month.order
-  cat("Calc mean over:",month.name[month],"...","\n")
+  if(verbose == TRUE){
+    cat("Calc mean over:",month.name[month],"...","\n")
+  }
 
   # drop !month
   drop.month = c(1:12)[!(1:12 %in% month)]

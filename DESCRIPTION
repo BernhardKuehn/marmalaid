@@ -2,7 +2,7 @@ Package: marmalaid
 Type: Package
 Title: MARine MAchine Learning AID - a collection of functions for utilising machine learning in marine biological science
 Version: 0.1
-Date: 2020-11-19
+Date: 2023-08-18
 Authors@R: 
     person(given = "Bernhard",
            family = "Kuehn",
@@ -14,7 +14,7 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: false
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
 Depends: R (>= 3.6.0),
 	 ecr (>= 2.0.0)
 Imports: caret,
@@ -33,7 +33,5 @@ Imports: caret,
 	 R.cache (>= 0.14.0),
 	 RColorBrewer,
 	 scales,
-	 sp
-	 
-	 
-
+	 sp, 
+	 terra

@@ -36,7 +36,7 @@ The DVI is now the sum of both the normalised intra- and inter ratios (optional 
 \examples{
 library(raster)
 data(sst.ahoi)
-sst.anom = fieldAnomaly.raster(brick = sst.ahoi,
+sst.anom = fieldAnomaly.raster(rst1 = sst.ahoi,
                             time = as.Date(sub("X","",names(sst.ahoi)),format = "\%Y.\%m.\%d"),
                              level = "month")
 # calc. mean over summer season

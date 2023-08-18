@@ -50,7 +50,7 @@ Wrapper function for \code{\link[kohonen:supersom]{som}} to perform a S-mode SOM
 library(raster)
 data(sst.ahoi)
 # calculate field anomaly
-sst.anom = fieldAnomaly.raster(brick = sst.ahoi,
+sst.anom = fieldAnomaly.raster(rst1 = sst.ahoi,
                             time = as.Date(sub("X","",names(sst.ahoi)),format = "\%Y.\%m.\%d"),
                             level = "month")
 # calc. mean over summer season

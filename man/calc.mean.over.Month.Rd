@@ -4,7 +4,7 @@
 \alias{calc.mean.over.Month}
 \title{Seasonal mean for spatio-temporal field}
 \usage{
-calc.mean.over.Month(raster, time, month, shiftYear = TRUE)
+calc.mean.over.Month(raster, time, month, shiftYear = TRUE, verbose = T)
 }
 \arguments{
 \item{raster}{A raster \code{brick} with each layer corresponding to a time step.}
@@ -14,6 +14,8 @@ calc.mean.over.Month(raster, time, month, shiftYear = TRUE)
 \item{month}{A vector of numbers between 1 and 12 denoting the month over which to calculate the average (e.g. 3,4,5). Only subsequent month are allowed (e.g \code{c(12,1,2)} works; \code{c(1,3,5)} does not!).}
 
 \item{shiftYear}{A logical value. How to handle averages over subsequent month but different years (e.g. Dec.-Jan.-Feb.). If \code{TRUE} the time returned corresponds to the older year (e.g. 1989), otherwise to the younger one (1990).}
+
+\item{verbose}{A logical value. Print output to console?}
 }
 \value{
 A raster \code{brick} containing the avg. spatial fields per specified monthly period per year.
