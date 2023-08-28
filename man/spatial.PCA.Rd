@@ -15,6 +15,7 @@ spatial.PCA(
 }
 \arguments{
 \item{x}{Either a raster \code{brick} for scalar valued spatio-temporal fields (e.g. SST) with each layer corresponding to a time step or a two-element \code{list} with each element being a \code{raster} for vector valued fields (e.g. u & v of Currents).
+Raster files from both the 'raster'-package (\code{RasterBrick}) and the 'terra' (\code{SpatRaster}) will work here.
 If layer names contain a reference to a date it will be used for writing it out.}
 
 \item{center}{A logical value indicating whether the variables should be centered around the mean.}
@@ -43,9 +44,25 @@ Wrapper function for \code{prcomp(...)} on a spatio-temporal field organised as 
 \examples{
 # load AHOI SST data
 library(raster)
+library(terra)
 data(sst.ahoi)
 # perform EOF-analysis
-SST.EOF = spatial.PCA(sst.ahoi,center = TRUE,scale. = FALSE,spatial.extent = NULL,plot = FALSE)
+SST.EOF = spatial.PCA(sst.ahoi,
+                      center = TRUE,scale. = FALSE,
+                      spatial.extent = NULL,plot = FALSE)
+# plot first EOF with PC timeseries
+layout(matrix(rep(c(1,2),each = 2),nrow = 2,ncol = 2,byrow = TRUE),heights = c(0.65,0.35))
+par(mar = c(4,4,3,3))
+image(SST.EOF$raster[[1]],las = 1,xlab = "lon",ylab = "lat")
+maps::map(add = TRUE,fill = TRUE,col = "gray80");box()
+title("EOF1",adj = 0)
+plot(SST.EOF$time,SST.EOF$sp.PCA$x[,1],type = "l",las = 1,xlab = "time",ylab = "")
+title("PC1",adj = 0)
+
+# use the terra package-integration instead
+SST.EOF = spatial.PCA(rast(sst.ahoi),
+                      center = TRUE,scale. = FALSE,
+                      spatial.extent = NULL,plot = FALSE)
 # plot first EOF with PC timeseries
 layout(matrix(rep(c(1,2),each = 2),nrow = 2,ncol = 2,byrow = TRUE),heights = c(0.65,0.35))
 par(mar = c(4,4,3,3))

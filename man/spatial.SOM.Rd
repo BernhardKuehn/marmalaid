@@ -16,7 +16,8 @@ spatial.SOM(
 )
 }
 \arguments{
-\item{x}{A raster \code{brick} with each layer corresponding to a time step specified in the argument \code{time}.}
+\item{x}{Either an object of class \code{RasterBrick} from the 'raster'-package or a \code{SpatRaster} from the 'terra'-package with each layer
+corresponding to a time step specified in the argument \code{time}.}
 
 \item{time}{the time step associated with each layer of the raster}
 

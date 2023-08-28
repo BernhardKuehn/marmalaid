@@ -8,7 +8,8 @@
 #' Self Organising Map (SOM) for a spatio-temporal field
 #'
 #' @description Wrapper function for \code{\link[kohonen:supersom]{som}} to perform a S-mode SOM on a spatio-temporal field organised as raster
-#' @param x A raster \code{brick} with each layer corresponding to a time step specified in the argument \code{time}.
+#' @param x Either an object of class \code{RasterBrick} from the 'raster'-package or a \code{SpatRaster} from the 'terra'-package with each layer
+#'  corresponding to a time step specified in the argument \code{time}.
 #' @param time the time step associated with each layer of the raster
 #' @param seed Seed settings for reproducibility, either \code{numeric} or \code{NULL}.
 #' @param parallel List, containing two elements: parallel - logical, if analysis needs to be run in parallel mode, cores - number of CPU-cores to run analysis on
@@ -80,14 +81,22 @@ spatial.SOM = function(x,time,plot = TRUE,seed = NULL,parallel = list(parallel =
 
   # # x can be a raster layer or a list of raster-layers if two variables are calculated simultaniously (e.g. u and v)
   if(class(x)=="list") {
-    if(all(lapply(x,class)%in%c("raster","RasterBrick","RasterStack"))) {
+    if(all(lapply(x,class)%in%c("raster","RasterBrick","RasterStack"))
+       || all(lapply(x,class)%in%c("SpatRaster"))) {
+
+      use.terra = ifelse(all(lapply(x,class)%in%c("SpatRaster")),TRUE,FALSE)
+
 
       # combine files to one matrix
 
       # get geo.position
       geo.pos = vector("list",length(x))
       for(i in 1:length(geo.pos)) {
-        geo.pos[[i]] = raster::xyFromCell(x[[i]],1:raster::ncell(x[[i]]))
+        if(use.terra == TRUE){
+          geo.pos[[i]] = terra::xyFromCell(x[[i]],1:terra::ncell(x[[i]]))
+        } else {
+          geo.pos[[i]] = raster::xyFromCell(x[[i]],1:raster::ncell(x[[i]]))
+        }
       }
       if(do.call(all.equal.numeric,geo.pos)) {
         geo.pos = geo.pos[[1]]
@@ -99,9 +108,12 @@ spatial.SOM = function(x,time,plot = TRUE,seed = NULL,parallel = list(parallel =
       print("1. convert raster to matrix...")
       tmp.mat = vector("list",length(x))
       for(i in 1:length(x)) {
-        tmp.mat[[i]] = t(raster::as.matrix(x[[i]]))
-      }
-
+        if(use.terra == TRUE){
+          tmp.mat[[i]] = t(terra::as.matrix(x[[i]]))
+        } else {
+          tmp.mat[[i]] = t(raster::as.matrix(x[[i]]))
+          }
+        }
       mat = do.call(cbind,tmp.mat); rm(tmp.mat)
       # bring files together in correct form
 
@@ -111,10 +123,16 @@ spatial.SOM = function(x,time,plot = TRUE,seed = NULL,parallel = list(parallel =
   } else {
     # convert to matrix
     print("1. convert raster to matrix...")
-    mat = t(raster::as.matrix(x))
-
-    # remove "land"-datapoints
-    geo.pos = raster::xyFromCell(x,1:raster::ncell(x))
+    use.terra = ifelse(class(x) == "SpatRaster",TRUE,FALSE)
+    if(use.terra == TRUE){
+      mat = t(terra::as.matrix(x))
+      # remove "land"-datapoints
+      geo.pos = terra::xyFromCell(x,1:terra::ncell(x))
+    } else{
+      mat = t(raster::as.matrix(x))
+      # remove "land"-datapoints
+      geo.pos = raster::xyFromCell(x,1:raster::ncell(x))
+    }
   }
 
   # check for NA column
@@ -206,11 +224,23 @@ spatial.SOM = function(x,time,plot = TRUE,seed = NULL,parallel = list(parallel =
     split.df = split(SOM.space.df,f = rep(1:length(x),each = nrow(geo.pos)))
     SOM.raster = vector("list",length = length(x))
     for(i in 1:length(x)) {
-      SOM.raster[[i]] = raster::rasterFromXYZ(split.df[[i]])
+      if(use.terra == TRUE){
+        SOM.raster[[i]] = terra::rast(split.df[[i]],type= "xyz")
+        terra::crs(SOM.raster) = terra::crs(x[[i]])
+      } else {
+        SOM.raster[[i]] = raster::rasterFromXYZ(split.df[[i]])
+        raster::crs(sp.PCA.raster) = raster::crs(x[[i]])
+      }
     }
   } else{
-    SOM.raster = raster::rasterFromXYZ(SOM.space.df)
-  }
+    if(use.terra == TRUE){
+      SOM.raster = terra::rast(SOM.space.df,type = "xyz")
+      terra::crs(SOM.raster) = terra::crs(x)
+    } else {
+      SOM.raster = raster::rasterFromXYZ(SOM.space.df)
+      raster::crs(SOM.raster) = raster::crs(x)
+      }
+    }
 
   #frequency of occurence
   freq = prop.table(table(best.SOM$unit.classif))[order(prop.table(table(best.SOM$unit.classif)),decreasing = TRUE)]
