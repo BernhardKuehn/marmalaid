@@ -2,7 +2,7 @@
 # a function that back-calculates the original field from
 # field anomalies (produced with the marmalaid package)
 # author: Bernhard Kuehn
-# last change: 2023.08.18
+# last change: 2023-08-28
 # =========================================================== #
 
 #' Add back field anomaly to a spatio-temporal field
@@ -54,6 +54,12 @@ fieldAnomaly.to.original = function(rst1,time,level = "month"){
     stop(paste("Supplied time vector needs to be the same length as 3rd dim. in the raster rst1!",
                "\n 3rd dim raster:",nrow(mat),"\n length time:", length(time)))
   }
+
+  # additional check if the spatial dimensions of the means and the anomaly match
+  if(dim(means)[1] != dim(mat.anom)[2]){
+    stop("Spatial dimension of the supplied raster and the attached grid-means does not match!")
+  }
+
 
   #based on function from sinkr-pkg
   if (level == "month") {
