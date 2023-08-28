@@ -226,10 +226,10 @@ spatial.SOM = function(x,time,plot = TRUE,seed = NULL,parallel = list(parallel =
     for(i in 1:length(x)) {
       if(use.terra == TRUE){
         SOM.raster[[i]] = terra::rast(split.df[[i]],type= "xyz")
-        terra::crs(SOM.raster) = terra::crs(x[[i]])
+        terra::crs(SOM.raster[[i]]) = terra::crs(x[[i]])
       } else {
         SOM.raster[[i]] = raster::rasterFromXYZ(split.df[[i]])
-        raster::crs(sp.PCA.raster) = raster::crs(x[[i]])
+        raster::crs(sp.PCA.raster[[i]]) = raster::crs(x[[i]])
       }
     }
   } else{

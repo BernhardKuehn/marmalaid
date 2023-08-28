@@ -226,10 +226,10 @@ spatial.PCA = function(x,center = TRUE , scale. = FALSE, spatial.extent = "North
     for(i in 1:length(x)) {
       if(use.terra == TRUE){
         sp.PCA.raster[[i]] = terra::rast(split.df[[i]],type = "xyz")
-        terra::crs(sp.PCA.raster) = terra::crs(x[[i]])
+        terra::crs(sp.PCA.raster[[i]]) = terra::crs(x[[i]])
       } else {
         sp.PCA.raster[[i]] = raster::rasterFromXYZ(split.df[[i]])
-        raster::crs(sp.PCA.raster) = raster::crs(x[[i]])
+        raster::crs(sp.PCA.raster[[i]]) = raster::crs(x[[i]])
         }
       }
     } else{
