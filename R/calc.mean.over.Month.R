@@ -99,7 +99,9 @@ calc.mean.over.Month = function(raster,time,month,shiftYear = TRUE,verbose = T) 
     for(i in unique(indx)) {
       s = ifelse(i == 1,1,e+1)
       e = cumsum(reps)[i]
+      if(verbose == TRUE){
       cat("year:", format(time.drop[s:e],"%Y"),"|","month:",substr(format(time.drop[s:e],"%b"),1,1),"\n")
+      }
     }
     month.mean = raster::stackApply(raster.drop,indx,mean) # calculate mean over respective month
     if(reps[1] < length(month)) {
@@ -121,8 +123,10 @@ calc.mean.over.Month = function(raster,time,month,shiftYear = TRUE,verbose = T) 
     indx = as.numeric(as.factor(as.numeric(format(time,"%Y"))[month.indx]))
     for(jj in unique(indx)){
       ii = which(indx == jj)
+      if(verbose == TRUE){
       cat("year:", format(time[month.indx[ii]],"%Y"),"|","month:",
           substr(format(time[month.indx[ii]],"%b"),1,1),"\n")
+      }
     }
     month.mean = raster::stackApply(raster.drop,indx,mean)
     names(month.mean) = unique(format(time,"%Y")[month.indx])
