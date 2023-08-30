@@ -7,7 +7,7 @@
 calc.mean.over.Month(raster, time, month, shiftYear = TRUE, verbose = T)
 }
 \arguments{
-\item{raster}{A raster \code{brick} with each layer corresponding to a time step.}
+\item{raster}{A raster of class \code{RasterBrick} ('raster'-pkg) or \code{SpatRaster} ('terra'-pkg) with each layer corresponding to a time step.}
 
 \item{time}{A vector of dates corresponding to each layer in the raster \code{brick}.}
 
@@ -18,7 +18,7 @@ calc.mean.over.Month(raster, time, month, shiftYear = TRUE, verbose = T)
 \item{verbose}{A logical value. Print output to console?}
 }
 \value{
-A raster \code{brick} containing the avg. spatial fields per specified monthly period per year.
+A raster of class \code{RasterBrick} ('raster'-pkg) or \code{SpatRaster} ('terra'-pkg) containing the avg. spatial fields per specified monthly period per year.
 }
 \description{
 Function to calculate the mean over subsequent month in a raster brick.
@@ -26,6 +26,7 @@ Function to calculate the mean over subsequent month in a raster brick.
 \examples{
 ## For an artificial toy dataset
 library(raster)
+library(terra)
 r = raster::raster(extent(c(-5,5,40,60)),
            res = c(0.1,0.1))
 date = seq(as.Date("1990-01-01"),
@@ -33,6 +34,7 @@ date = seq(as.Date("1990-01-01"),
 br = raster::brick(lapply(seq_along(date), function(i) setValues(r,runif(ncell(r)))))
 calc.mean.over.Month(raster = br, time = date,month = c(12,1,2),shiftYear = TRUE)
 calc.mean.over.Month(raster = br, time = date,month = c(12,1,2),shiftYear = FALSE)
+calc.mean.over.Month(raster = terra::rast(br), time = date,month = c(12,1,2),shiftYear = FALSE)
 ## For SST of the North Sea
 data(sst.ahoi)
 SST.winter = calc.mean.over.Month(raster = sst.ahoi,

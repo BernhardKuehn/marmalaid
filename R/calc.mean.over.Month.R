@@ -5,15 +5,16 @@
 #' Seasonal mean for spatio-temporal field
 #'
 #' @description Function to calculate the mean over subsequent month in a raster brick.
-#' @param raster A raster \code{brick} with each layer corresponding to a time step.
+#' @param raster A raster of class \code{RasterBrick} ('raster'-pkg) or \code{SpatRaster} ('terra'-pkg) with each layer corresponding to a time step.
 #' @param time A vector of dates corresponding to each layer in the raster \code{brick}.
 #' @param month A vector of numbers between 1 and 12 denoting the month over which to calculate the average (e.g. 3,4,5). Only subsequent month are allowed (e.g \code{c(12,1,2)} works; \code{c(1,3,5)} does not!).
 #' @param shiftYear A logical value. How to handle averages over subsequent month but different years (e.g. Dec.-Jan.-Feb.). If \code{TRUE} the time returned corresponds to the older year (e.g. 1989), otherwise to the younger one (1990).
 #' @param verbose A logical value. Print output to console?
-#' @return A raster \code{brick} containing the avg. spatial fields per specified monthly period per year.
+#' @return A raster of class \code{RasterBrick} ('raster'-pkg) or \code{SpatRaster} ('terra'-pkg) containing the avg. spatial fields per specified monthly period per year.
 #' @examples
 #'## For an artificial toy dataset
 #' library(raster)
+#' library(terra)
 #' r = raster::raster(extent(c(-5,5,40,60)),
 #'            res = c(0.1,0.1))
 #' date = seq(as.Date("1990-01-01"),
@@ -21,6 +22,7 @@
 #' br = raster::brick(lapply(seq_along(date), function(i) setValues(r,runif(ncell(r)))))
 #' calc.mean.over.Month(raster = br, time = date,month = c(12,1,2),shiftYear = TRUE)
 #' calc.mean.over.Month(raster = br, time = date,month = c(12,1,2),shiftYear = FALSE)
+#' calc.mean.over.Month(raster = terra::rast(br), time = date,month = c(12,1,2),shiftYear = FALSE)
 #' ## For SST of the North Sea
 #' data(sst.ahoi)
 #' SST.winter = calc.mean.over.Month(raster = sst.ahoi,
@@ -30,6 +32,14 @@
 #'
 #' @export
 calc.mean.over.Month = function(raster,time,month,shiftYear = TRUE,verbose = T) {
+
+  if(any(class(raster) %in% c("raster","RasterBrick","RasterStack"))){
+    use.terra = FALSE
+  } else if(class(raster) == "SpatRaster"){
+    use.terra = TRUE
+  } else {
+    stop("Provided argument 'raster' needs to be of class 'RasterBrick' or 'SpatRaster'!")
+  }
 
   # check if times and raster are the same size
   if(dim(raster)[3] != length(time)) {
@@ -87,7 +97,12 @@ calc.mean.over.Month = function(raster,time,month,shiftYear = TRUE,verbose = T) 
   # drop !month
   drop.month = c(1:12)[!(1:12 %in% month)]
   drop.indx = which(as.numeric(format(time,"%m")) %in% drop.month)
-  raster.drop = raster::dropLayer(raster,drop.indx)
+  if(use.terra == TRUE){
+    raster.drop = raster[[-drop.indx]]
+  } else {
+    raster.drop = raster::dropLayer(raster,drop.indx)
+  }
+
   time.drop = time[-drop.indx]
 
   if(any(abs(diff(month))>1)) {
@@ -103,7 +118,11 @@ calc.mean.over.Month = function(raster,time,month,shiftYear = TRUE,verbose = T) 
       cat("year:", format(time.drop[s:e],"%Y"),"|","month:",substr(format(time.drop[s:e],"%b"),1,1),"\n")
       }
     }
-    month.mean = raster::stackApply(raster.drop,indx,mean) # calculate mean over respective month
+    if(use.terra == TRUE){
+      month.mean = terra::tapp(raster.drop,indx,mean)
+    } else{
+      month.mean = raster::stackApply(raster.drop,indx,mean) # calculate mean over respective month
+    }
     if(reps[1] < length(month)) {
       if(shiftYear == TRUE) { # added on the 2019-10-11 to control the time-stamp if month span over different years
         names(month.mean) = c(as.numeric(unique(format(time.drop,"%Y")))-1,max(unique(format(time.drop,"%Y"))))
@@ -128,7 +147,11 @@ calc.mean.over.Month = function(raster,time,month,shiftYear = TRUE,verbose = T) 
           substr(format(time[month.indx[ii]],"%b"),1,1),"\n")
       }
     }
-    month.mean = raster::stackApply(raster.drop,indx,mean)
+    if(use.terra == TRUE){
+      month.mean = terra::tapp(raster.drop,indx,mean)
+    } else{
+      month.mean = raster::stackApply(raster.drop,indx,mean) # calculate mean over respective month
+    }
     names(month.mean) = unique(format(time,"%Y")[month.indx])
   }
   return(month.mean)
