@@ -23,6 +23,7 @@
 #' calc.mean.over.Month(raster = br, time = date,month = c(12,1,2),shiftYear = TRUE)
 #' calc.mean.over.Month(raster = br, time = date,month = c(12,1,2),shiftYear = FALSE)
 #' calc.mean.over.Month(raster = terra::rast(br), time = date,month = c(12,1,2),shiftYear = FALSE)
+#' calc.mean.over.Month(raster = terra::rast(br), time = date,month = 1:12,shiftYear = FALSE)
 #' ## For SST of the North Sea
 #' data(sst.ahoi)
 #' SST.winter = calc.mean.over.Month(raster = sst.ahoi,
@@ -97,13 +98,17 @@ calc.mean.over.Month = function(raster,time,month,shiftYear = TRUE,verbose = T) 
   # drop !month
   drop.month = c(1:12)[!(1:12 %in% month)]
   drop.indx = which(as.numeric(format(time,"%m")) %in% drop.month)
+  if(length(drop.indx) == 0){
+    raster.drop = raster
+    time.drop = time
+  } else {
   if(use.terra == TRUE){
-    raster.drop = raster[[-drop.indx]]
+      raster.drop = raster[[-drop.indx]]
   } else {
     raster.drop = raster::dropLayer(raster,drop.indx)
   }
-
-  time.drop = time[-drop.indx]
+    time.drop = time[-drop.indx]
+  }
 
   if(any(abs(diff(month))>1)) {
     # apply mean over respective month

@@ -35,6 +35,7 @@ br = raster::brick(lapply(seq_along(date), function(i) setValues(r,runif(ncell(r
 calc.mean.over.Month(raster = br, time = date,month = c(12,1,2),shiftYear = TRUE)
 calc.mean.over.Month(raster = br, time = date,month = c(12,1,2),shiftYear = FALSE)
 calc.mean.over.Month(raster = terra::rast(br), time = date,month = c(12,1,2),shiftYear = FALSE)
+calc.mean.over.Month(raster = terra::rast(br), time = date,month = 1:12,shiftYear = FALSE)
 ## For SST of the North Sea
 data(sst.ahoi)
 SST.winter = calc.mean.over.Month(raster = sst.ahoi,
