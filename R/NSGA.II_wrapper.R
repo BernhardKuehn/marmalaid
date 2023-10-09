@@ -348,7 +348,7 @@ NSGA.II_wrapper = function(x,y,seed,
       # remove dublicates
       index.rm = which(dubs == T)
       if(!pracma::isempty(index.rm)){
-        offspr.tmp = offspr.tmp[-index.rm,]
+        offspr.tmp = offspr.tmp[-index.rm,,drop = F]
       }
       # create list again
       offspring = split(offspr.tmp, seq(nrow(offspr.tmp)))
