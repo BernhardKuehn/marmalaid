@@ -351,7 +351,7 @@ NSGA.II_wrapper = function(x,y,seed,
         offspr.tmp = offspr.tmp[-index.rm,,drop = F]
       }
       # create list again
-      offspring = split(offspr.tmp, seq(nrow(offspr.tmp)))
+      offspring = split(offspr.tmp, seq_len(nrow(offspr.tmp)))
     }
 
     # print to console
