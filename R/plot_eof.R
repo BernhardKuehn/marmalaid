@@ -1,14 +1,13 @@
-#' Function to plot the EOF pattern (spatial/temporal)
+#' @title Function to plot the EOF pattern (spatial/temporal)
 #'
-#' This functions is a rather easy plotting function to see the spatial & temporal
+#' @description This functions is a rather easy plotting function to see the spatial & temporal
 #' representation of the first n calculated EOF modes.
 #' Typically a maximum of 15 modes should not be exceeded.
-#'
 #' @param eof.out An output object from the \code{spatial.PCA} function
 #' @param n The number of corresponding EOF-pattern/PC-time series to show.
-
+#'
 #' @export
-plot.eof = function(eof.out,n){
+plot_eof = function(eof.out,n){
   opar = graphics::par(no.readonly = TRUE)
   on.exit(graphics::par(opar))
   # get PC time series
